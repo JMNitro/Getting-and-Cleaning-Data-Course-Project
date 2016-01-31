@@ -153,7 +153,8 @@ The complete list of variables of each feature vector is available in 'features.
 
 ##  Transformations and work performed to clean up the data
 
-## Reading data files
+### Reading data files
+```sh
 test.labels <- read.table("./test/y_test.txt", col.names="label")
 test.subjects <- read.table("./test/subject_test.txt", col.names="subject")
 test.set <- read.table("./test/X_test.txt")
@@ -162,45 +163,61 @@ train.subjects <- read.table("./train/subject_train.txt", col.names="subject")
 train.set <- read.table("./train/X_train.txt")
 features <- read.table("./features.txt")
 activityLabels <- read.table("./activity_labels.txt")
-
-## bind different datasets
+```
+### bind different datasets
+```sh
 dataLabels <- rbind(test.labels, train.labels)
 dataSubject <- rbind(test.subjects, train.subjects)
 dataSets <- rbind(test.set, train.set)
+```
 
-## Give them some names
+### Give them some names
+```sh
 names(dataSubject) <-c("subject")
 names(dataLabels) <- c("activity")
 names(activityLabels) <- c("activity","activityName")
 names(dataSets) <- features$V2
+```
 
-## Combine datasets together
+### Combine datasets together
+```sh
 dataCombine <- cbind(dataSubject, dataLabels)
 Data <- cbind(dataSets, dataCombine)
+```
 
-## Get only names that include mean or std
+### Get only names that include mean or std
+```sh
 featuresMeanStd <- grep("mean\\(\\)|std\\(\\)",features$V2,value=TRUE)
+```
 
-## Lets add "subject" and "activity" to them, so will have complete set ready
+### Lets add "subject" and "activity" to them, so will have complete set ready
+```sh
 dataFeaturesMeanStd <- union(c("subject","activity"), featuresMeanStd)
 dataTable <- subset(Data, select=dataFeaturesMeanStd) 
+```
 
-## Now get activityLabels for the activities taht we have
+### Now get activityLabels for the activities taht we have
+```sh
 dataTable <- merge(activityLabels, dataTable , by="activity", all.x=TRUE)
 
-## ...database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ...
-## ...These time domain signals (prefix 't' to denote time) were captured at a constant rate of 50 Hz...
-## ...Also the magnitude of these thre...
-## ...(Note the 'f' to indicate frequency domain signals). ...
+
+### ...database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ...
+### ...These time domain signals (prefix 't' to denote time) were captured at a constant rate of 50 Hz...
+### ...Also the magnitude of these thre...
+### ...(Note the 'f' to indicate frequency domain signals). ...
 
 names(dataTable)<-gsub("^t", "time", names(dataTable))
 names(dataTable)<-gsub("^f", "frequency", names(dataTable))
 names(dataTable)<-gsub("Acc", "Accelerometer", names(dataTable))
 names(dataTable)<-gsub("Gyro", "Gyroscope", names(dataTable))
 names(dataTable)<-gsub("Mag", "Magnitude", names(dataTable))
+```
 
+### Create tidy data and save it to a file
+```sh
 tidyData <- aggregate( . ~ activityName+subject, dataTable, mean)
 str(tidyData)
 write.table(tidyData, "C:/Users/majurijm/desktop/coursera/clean/UCI HAR Dataset/tidyData.txt", sep="\t")
 mydata = read.table("C:/Users/majurijm/desktop/coursera/clean/UCI HAR Dataset/tidyData.txt", sep="\t") 
 head(mydata, 10)
+```
