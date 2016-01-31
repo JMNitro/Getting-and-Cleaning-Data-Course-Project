@@ -217,7 +217,5 @@ names(dataTable)<-gsub("Mag", "Magnitude", names(dataTable))
 ```sh
 tidyData <- aggregate( . ~ activityName+subject, dataTable, mean)
 str(tidyData)
-write.table(tidyData, "C:/Users/majurijm/desktop/coursera/clean/UCI HAR Dataset/tidyData.txt", sep="\t")
-mydata = read.table("C:/Users/majurijm/desktop/coursera/clean/UCI HAR Dataset/tidyData.txt", sep="\t") 
-head(mydata, 10)
+write.table(tidyData, "tidyData.txt", sep="\t")
 ```
